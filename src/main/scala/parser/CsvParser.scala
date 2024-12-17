@@ -1,23 +1,36 @@
 package parser
 
-// Define as a singleton
+import scala.annotation.tailrec
+
 object CsvParser {
   def splitCsvLine(line: String): Array[String] = {
-    val result = new scala.collection.mutable.ArrayBuffer[String]
-    val current = new StringBuilder
-    var inQuotes = false
+    @tailrec
+    def parse(remaining: List[Char],
+              currentField: List[Char],
+              fields: List[String],
+              insideQuotes: Boolean): List[String] = {
 
-    for (c <- line) {
-      c match {
-        case '"' => inQuotes = !inQuotes
-        case ',' if !inQuotes =>
-          result += current.toString.trim.stripPrefix("\"").stripSuffix("\"")
-          current.clear()
-        case _ => current.append(c)
+      remaining match {
+        case Nil =>
+          (currentField.reverse.mkString :: fields).reverse
+
+        case '"' :: tail if !insideQuotes =>
+          parse(tail, currentField, fields, true)
+
+        case '"' :: '"' :: tail if insideQuotes =>
+          parse(tail, '"' :: currentField, fields, true)
+
+        case '"' :: tail if insideQuotes =>
+          parse(tail, currentField, fields, false)
+
+        case ',' :: tail if !insideQuotes =>
+          parse(tail, Nil, currentField.reverse.mkString :: fields, false)
+
+        case head :: tail =>
+          parse(tail, head :: currentField, fields, insideQuotes)
       }
     }
 
-    result += current.toString.trim.stripPrefix("\"").stripSuffix("\"")
-    result.toArray
+    parse(line.toList, Nil, Nil, false).toArray
   }
 }
