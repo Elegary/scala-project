@@ -8,3 +8,9 @@ lazy val root = (project in file("."))
   )
 
 libraryDependencies += "com.lihaoyi" %% "os-lib" % "0.9.1"
+
+libraryDependencies ++= Seq(
+  "org.scalikejdbc" %% "scalikejdbc"       % "4.3.2",
+  "com.h2database"  %  "h2"                % "2.2.224",
+  "ch.qos.logback"  %  "logback-classic"   % "1.5.6"
+)
