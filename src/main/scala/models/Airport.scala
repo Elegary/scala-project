@@ -1,5 +1,8 @@
 package models
 
+import parser.CsvParser
+
+// model
 case class Airport(
                     id: Int,
                     ident: String,
@@ -24,25 +27,8 @@ case class Airport(
 object Airport {
   def from(csvLine: String): Airport = {
     // Custom split function that respects quotes
-    def splitCsvLine(line: String): Array[String] = {
-      val result = new scala.collection.mutable.ArrayBuffer[String]
-      var current = new StringBuilder
-      var inQuotes = false
 
-      for (c <- line) {
-        c match {
-          case '"' => inQuotes = !inQuotes
-          case ',' if !inQuotes =>
-            result += current.toString.trim.replaceAll("^\"|\"$", "") // Remove surrounding quotes
-            current = new StringBuilder
-          case _ => current.append(c)
-        }
-      }
-      result += current.toString.trim.replaceAll("^\"|\"$", "") // Add the last field
-      result.toArray
-    }
-
-    val fields = splitCsvLine(csvLine)
+    val fields = CsvParser.splitCsvLine(csvLine)
 
     Airport(
       id = fields(0).toInt,

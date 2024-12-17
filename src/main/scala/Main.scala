@@ -7,6 +7,7 @@ object Main {
     val airports_lines = os.read.lines(path / "airports.csv")
     airports_lines.drop(1).foreach(airport_line => {
       val airport = Airport.from(airport_line)
+      println(airport)
     })
 
   }
