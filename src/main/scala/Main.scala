@@ -1,11 +1,20 @@
 import models.{Airport, Country, Runway}
+import repository.DBSetup
+import scalikejdbc._
+import scalikejdbc.config._
+
+// DBs.setup/DBs.setupAll loads specified JDBC driver classes.
 
 object Main {
   def main(args: Array[String]): Unit = {
     println("BDML Project")
-    val path = os.pwd / "data"
 
-    // TODO: maybe use buffered source
+    DBSetup.initialize()
+
+  }
+
+  def load_files(): Unit = {
+    val path = os.pwd / "data"
     val airports_lines = os.read.lines(path / "airports.csv")
     airports_lines.drop(1).foreach(airport_line => {
       val airport = Airport.from(airport_line)
@@ -23,6 +32,5 @@ object Main {
       val runway = Runway.from(runway_line)
       println(runway)
     })
-
   }
 }
