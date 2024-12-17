@@ -1,4 +1,4 @@
-import models.{Airport, Country}
+import models.{Airport, Country, Runway}
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -14,6 +14,12 @@ object Main {
     countries_lines.drop(1).foreach(country_line => {
       val country = Country.from(country_line)
       println(country)
+    })
+
+    val runways_lines = os.read.lines(path / "runways.csv")
+    runways_lines.drop(1).foreach(runway_line => {
+      val runway = Runway.from(runway_line)
+      println(runway)
     })
 
   }
