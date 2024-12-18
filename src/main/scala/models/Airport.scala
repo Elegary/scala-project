@@ -1,6 +1,7 @@
 package models
 
 import parser.CsvParser
+import scalikejdbc.{SQLSyntaxSupport, WrappedResultSet}
 
 // model
 case class Airport(
@@ -24,9 +25,32 @@ case class Airport(
                     keywords: Option[String]
                   )
 
-object Airport {
+object Airport extends SQLSyntaxSupport[Airport] {
+  override val tableName = "airports"
+
+  // Define column names mapping
+  def apply(rs: WrappedResultSet): Airport = new Airport(
+    id = rs.int("id"),
+    ident = rs.string("ident"),
+    airportType = rs.string("airport_type"),
+    name = rs.string("name"),
+    latitude = rs.double("latitude"),
+    longitude = rs.double("longitude"),
+    elevationFt = rs.intOpt("elevation_ft"),
+    continent = rs.string("continent"),
+    isoCountry = rs.string("iso_country"),
+    isoRegion = rs.string("iso_region"),
+    municipality = rs.stringOpt("municipality"),
+    scheduledService = rs.string("scheduled_service"),
+    gpsCode = rs.stringOpt("gps_code"),
+    iataCode = rs.stringOpt("iata_code"),
+    localCode = rs.stringOpt("local_code"),
+    homeLink = rs.stringOpt("home_link"),
+    wikipediaLink = rs.stringOpt("wikipedia_link"),
+    keywords = rs.stringOpt("keywords")
+  )
+
   def from(csvLine: String): Airport = {
-    // Custom split function that respects quotes
 
     val fields = CsvParser.splitCsvLine(csvLine)
 
@@ -52,4 +76,3 @@ object Airport {
     )
   }
 }
-
