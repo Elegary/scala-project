@@ -60,4 +60,40 @@ class RunwayRepository {
     }
   }
 
+  def getTypeOfRunwaysPerCountry(): List[(String, String)] = {
+    DB readOnly { implicit session =>
+      sql"""
+      SELECT DISTINCT c.name, r.surface
+      FROM countries c
+      JOIN airports a ON c.code = a.iso_country
+      JOIN runways r ON a.id = r.airport_ref
+      WHERE r.surface IS NOT NULL
+      """.map(rs => (rs.string("name"), rs.string("surface"))).list.apply()
+    }
+  }
+
+  // • The top 10 most common runway latitude (indicated in "le_ident" column)
+  def getTop10RunwayLatitudes(): List[(String, Int)] = {
+    DB readOnly { implicit session =>
+      sql"""
+      SELECT le_ident, COUNT(le_ident) AS count
+      FROM runways
+      WHERE le_ident IS NOT NULL
+      GROUP BY le_ident
+      ORDER BY count DESC
+      LIMIT 10
+      """.map(rs => (rs.string("le_ident"), rs.int("count"))).list.apply()
+    }
+  }
+
+  def getAiportsAndRunwaysByCountryCode(code: String): List[(String, Runway)] = {
+    DB readOnly { implicit session =>
+      sql"""
+      SELECT *
+      FROM runways r
+      JOIN airports a ON r.airport_ref = a.id
+      WHERE a.iso_country = $code
+      """.map(rs => (rs.string("name"), Runway(rs))).list.apply()
+    }
+  }
 }
