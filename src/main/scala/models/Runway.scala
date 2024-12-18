@@ -25,7 +25,10 @@ case class Runway(
                    heElevationFt: Option[Int],
                    heHeadingDegT: Option[Double],
                    heDisplacedThresholdFt: Option[Int]
-                 )
+                 ) {
+  // make a nice display of useful information
+  def niceDisplay: String = s"Runway $id is $lengthFt ft long and $widthFt ft wide, it is made of $surface, currenlty ${if (lighted) "lighted" else "not lighted"} and ${if (closed) "closed" else "open"}"
+}
 
 object Runway extends SQLSyntaxSupport[Runway] {
 
@@ -87,4 +90,7 @@ object Runway extends SQLSyntaxSupport[Runway] {
 
   private def toOptionalString(value: String): Option[String] =
     if (value.isEmpty) None else Some(value)
+
+  // toString method
+
 }
