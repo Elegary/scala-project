@@ -25,7 +25,9 @@ class CountryRepository {
   def insert(country: Country): Unit = {
     DB localTx { implicit session =>
       sql"""
-      INSERT INTO countries (id, code, name, continent, wikipedia_link, keywords)
+      INSERT INTO countries (
+        id, code, name, continent, wikipedia_link, keywords
+      )
       VALUES (
         ${country.id}, ${country.code}, ${country.name}, ${country.continent},
         ${country.wikipediaLink}, ${country.keywords.orNull}
