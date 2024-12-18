@@ -35,9 +35,11 @@ class AirportRepository {
   def insert(airport: Airport): Unit = {
     DB localTx { implicit session =>
       sql"""
-      INSERT INTO airports (id, ident, airport_type, name, latitude, longitude, elevation_ft, continent,
-                            iso_country, iso_region, municipality, scheduled_service, gps_code, iata_code,
-                            local_code, home_link, wikipedia_link, keywords)
+      INSERT INTO airports (
+      id, ident, airport_type, name, latitude, longitude, elevation_ft, continent,
+      iso_country, iso_region, municipality, scheduled_service, gps_code, iata_code,
+      local_code, home_link, wikipedia_link, keywords
+      )
       VALUES (
         ${airport.id}, ${airport.ident}, ${airport.airportType}, ${airport.name},
         ${airport.latitude}, ${airport.longitude}, ${airport.elevationFt.orNull},
