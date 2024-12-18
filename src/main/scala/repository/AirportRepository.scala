@@ -58,5 +58,21 @@ class AirportRepository {
     }
   }
 
+  def getAirportsCountByCountry(limit: Int, ascending: Boolean): List[(String, Int)] = {
+    // set order statement
+    val orderStatement = if (ascending) sqls"ASC" else sqls"DESC"
+
+    DB readOnly { implicit session =>
+      sql"""
+      SELECT iso_country, COUNT(*) AS count
+      FROM airports
+      GROUP BY iso_country
+      ORDER BY count $orderStatement
+      LIMIT $limit
+    """.map(rs => (rs.string("iso_country"), rs.int("count"))).list.apply()
+    }
+  }
+
+
   // Define more methods for particular queries as needed
 }
