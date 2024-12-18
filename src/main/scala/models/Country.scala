@@ -1,6 +1,7 @@
 package models
 
 import parser.CsvParser
+import scalikejdbc.SQLSyntaxSupport
 
 case class Country(
                     id: Int,
@@ -11,7 +12,17 @@ case class Country(
                     keywords: Option[String]
                   )
 
-object Country {
+object Country extends SQLSyntaxSupport[Country] {
+
+  def apply(rs: scalikejdbc.WrappedResultSet): Country = new Country(
+    id = rs.int("id"),
+    code = rs.string("code"),
+    name = rs.string("name"),
+    continent = rs.string("continent"),
+    wikipediaLink = rs.string("wikipedia_link"),
+    keywords = rs.stringOpt("keywords")
+  )
+
   def from(csvLine: String): Country = {
     val fields = CsvParser.splitCsvLine(csvLine)
 
