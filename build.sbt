@@ -13,5 +13,11 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc" %% "scalikejdbc"         % "4.3.2",
   "org.scalikejdbc" %% "scalikejdbc-config"  % "4.3.2",
   "com.h2database"  %  "h2"                  % "2.2.224",
-  "ch.qos.logback"  %  "logback-classic"     % "1.5.6"
+  "ch.qos.logback"  %  "logback-classic"     % "1.5.6",
+
+  // API REST
+    "com.typesafe.akka" %% "akka-http" % "10.5.3",
+    "com.typesafe.akka" %% "akka-actor-typed" % "2.8.8",
+    "com.typesafe.akka" %% "akka-http-spray-json" % "10.5.3",
+    "com.typesafe.akka" %% "akka-stream" % "2.8.8"
 )
