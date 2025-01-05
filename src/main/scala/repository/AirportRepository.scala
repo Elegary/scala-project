@@ -3,7 +3,7 @@ package repository
 import scalikejdbc._
 import models.Airport
 
-class AirportRepository {
+object AirportRepository {
 
   def createTable(): Unit = {
     DB autoCommit { implicit session =>
@@ -54,7 +54,7 @@ class AirportRepository {
 
   def findAll(): List[Airport] = {
     DB readOnly { implicit session =>
-      sql"SELECT * FROM airports".map(Airport.apply).list.apply()
+      sql"SELECT * FROM airports LIMIT 100".map(Airport.apply).list.apply()
     }
   }
 
@@ -72,7 +72,6 @@ class AirportRepository {
     """.map(rs => (rs.string("iso_country"), rs.int("count"))).list.apply()
     }
   }
-
 
   // Define more methods for particular queries as needed
 }
