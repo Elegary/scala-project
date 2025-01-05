@@ -1,3 +1,4 @@
+import db.DatabaseSetup
 import models.{Airport, Country, Runway}
 import os.Path
 import repository.{AirportRepository, CountryRepository, DBSetup, RunwayRepository}
@@ -13,7 +14,7 @@ object Main {
 
     val data_path = os.pwd / "data"
 
-    DBSetup.initialize()
+    DatabaseSetup.init()
 
     println("Loading airports...")
     load_airports(data_path / "airports.csv")
