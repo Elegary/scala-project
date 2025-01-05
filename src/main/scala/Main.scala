@@ -5,6 +5,8 @@ import repository.{AirportRepository, CountryRepository, DBSetup, RunwayReposito
 import scalikejdbc._
 import scalikejdbc.config._
 
+import api.ApiService
+
 // DBs.setup/DBs.setupAll loads specified JDBC driver classes.
 
 
@@ -15,6 +17,8 @@ object Main {
     val data_path = os.pwd / "data"
 
     DatabaseSetup.init()
+
+    ApiService.start()
 
     println("Loading airports...")
     load_airports(data_path / "airports.csv")
@@ -36,9 +40,9 @@ object Main {
         println(s"Airport: ${airport._1}")
         airport._2.foreach(runway => println(s"\t- ${runway._2.niceDisplay}"))
       })
-      val tenHighestAirports = new AirportRepository().getAirportsCountByCountry(10, ascending = false)
+      val tenHighestAirports = AirportRepository.getAirportsCountByCountry(10, ascending = false)
       tenHighestAirports.foreach(println)
-      val tenLowestAirports = new AirportRepository().getAirportsCountByCountry(10, ascending = true)
+      val tenLowestAirports = AirportRepository.getAirportsCountByCountry(10, ascending = true)
       tenLowestAirports.foreach(println)
       val typesOfRunways = new RunwayRepository().getTypeOfRunwaysPerCountry()
       // result is a list of tuples (country_name, runway_surface), we group by country name
@@ -56,12 +60,11 @@ object Main {
   }
 
   def load_airports(path: Path): Unit = {
-    val airportRepo = new AirportRepository()
-    airportRepo.createTable()
+    AirportRepository.createTable()
     val airports_lines = os.read.lines.stream(path)
     airports_lines.drop(1).foreach(airport_line => {
       val airport = Airport.from(airport_line)
-      airportRepo.insert(airport)
+      AirportRepository.insert(airport)
     })
   }
 
