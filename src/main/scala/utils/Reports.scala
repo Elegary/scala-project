@@ -1,6 +1,5 @@
 package utils
 
-import models.Airport
 import repository.{AirportRepository, RunwayRepository}
 
 
@@ -26,4 +25,10 @@ object Reports {
       CountryRunway(country._1, country._2.map(_._2))
       }).toSeq
     }
+
+  def getTop10RunwayLatitudes(): Seq[(String, Int)] = {
+    new RunwayRepository().getTop10RunwayLatitudes()
   }
+
+  }
+
