@@ -5,7 +5,7 @@ import models.Country
 import scalikejdbc._
 
 
-class CountryRepository {
+object CountryRepository {
 
   def createTable(): Unit = {
     DB autoCommit { implicit session =>

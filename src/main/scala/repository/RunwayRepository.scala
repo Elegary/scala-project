@@ -3,7 +3,7 @@ package repository
 import models.Runway
 import scalikejdbc._
 
-class RunwayRepository {
+object RunwayRepository {
 
   def createTable(): Unit = {
     DB autoCommit { implicit session =>
@@ -97,20 +97,24 @@ class RunwayRepository {
     }
   }
 
-  def getAirportsAndRunwaysByPartialCountryName(name: String): List[(String, Runway)] = {
-
+  def getAirportsAndRunwaysByPartialCountryName(name: String): List[(String, String, Runway)] = {
     val pattern = s"%${name.toUpperCase}%"
 
     DB readOnly { implicit session =>
       sql"""
-      SELECT *
+      SELECT c.name AS country_name, a.name AS airport_name, r.*
       FROM runways r
       JOIN airports a ON r.airport_ref = a.id
       JOIN countries c ON a.iso_country = c.code
       WHERE UPPER(c.name) LIKE $pattern
-      ORDER BY c.name
-      LIMIT 1
-      """.map(rs => (rs.string("name"), Runway(rs))).list.apply()
+      ORDER BY c.name, a.name
+      """
+        .map { rs =>
+          // Extract country name, airport name, and construct a Runway object
+          (rs.string("country_name"), rs.string("airport_name"), Runway(rs))
+        }
+        .list
+        .apply()
     }
   }
 
