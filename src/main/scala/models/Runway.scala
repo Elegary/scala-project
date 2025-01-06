@@ -27,7 +27,9 @@ case class Runway(
                    heDisplacedThresholdFt: Option[Int]
                  ) {
   // make a nice display of useful information
-  def niceDisplay: String = s"Runway $id is $lengthFt ft long and $widthFt ft wide, it is made of $surface, currenlty ${if (lighted) "lighted" else "not lighted"} and ${if (closed) "closed" else "open"}"
+  def niceDisplay: String = {
+    s"Runway $id at $airportIdent is ${lengthFt.getOrElse("unknown")} ft long and ${widthFt.getOrElse("unknown")} ft wide ${if (lighted) "lighted" else "not lighted"} and ${if (closed) "closed" else "open"}"
+  }
 }
 
 object Runway extends SQLSyntaxSupport[Runway] {
