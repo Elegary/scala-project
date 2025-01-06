@@ -31,7 +31,7 @@ object ApiService extends JsonSupport {
     }
   } ~ path("airports" / "runways" / Segment) { code =>
     get {
-      complete(utils.Query.queryAiportsAndRunwaysByCountryCode(code))
+      complete(utils.Query.queryAirportsAndRunwaysByCountryCode(code))
     }
   } ~ path("airports" / "counts" / "highest") {
     get {
