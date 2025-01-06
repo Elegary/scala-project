@@ -18,7 +18,7 @@ object Reports {
 
   // get a list of country_name: String, runway_surface: list of String
   def getTypeOfRunwaysPerCountry(): Seq[CountryRunway] = {
-    val runways = new RunwayRepository().getTypeOfRunwaysPerCountry()
+    val runways = RunwayRepository.getTypeOfRunwaysPerCountry()
     val groupedByCountry = runways.groupBy(_._1)
     // use case class to return the result
     groupedByCountry.map(country => {
@@ -27,7 +27,7 @@ object Reports {
     }
 
   def getTop10RunwayLatitudes(): Seq[(String, Int)] = {
-    new RunwayRepository().getTop10RunwayLatitudes()
+    RunwayRepository.getTop10RunwayLatitudes()
   }
 
   }
