@@ -78,7 +78,7 @@ object ConsoleApp {
         val tenHighestAirports = get10CountriesWithMostAirports()
         // display position and country, get country name from findCountryByCode
         tenHighestAirports.zipWithIndex.foreach { case ((countryCode, count), index) =>
-            val country = new CountryRepository().findCountryByCode(countryCode)
+            val country = CountryRepository.findCountryByCode(countryCode)
             val countryName = country match {
                 case Some(c) => c.name
                 case None => "Unknown"
@@ -93,7 +93,7 @@ object ConsoleApp {
         val tenLowestAirports = get10CountriesWithLeastAirports()
         // display position and country, get country name from findCountryByCode
         tenLowestAirports.zipWithIndex.foreach { case ((countryCode, count), index) =>
-            val country = new CountryRepository().findCountryByCode(countryCode)
+            val country = CountryRepository.findCountryByCode(countryCode)
             val countryName = country match {
                 case Some(c) => c.name
                 case None => "Unknown"
@@ -133,6 +133,13 @@ object ConsoleApp {
         if (airportsRunways.isEmpty) {
             println("No results found")
         } else {
+            // show country name
+            val country = CountryRepository.findCountryByCode(countryCode)
+            val countryName = country match {
+                case Some(c) => c.name
+                case None => "Unknown"
+            }
+            println(s"Country: $countryName")
             airportsRunways.foreach(ar => {
                 println(s"Airport: ${ar.airportName}")
                 ar.runways.map(runway => println(s"\t- ${runway.niceDisplay}"))
@@ -141,19 +148,28 @@ object ConsoleApp {
     }
 
     def displayCountryAirportsAndRunwaysByPartialName(): Unit = {
-        // Display the airports and runways for a partial country name
+        // Prompt the user for a country name (partial or full)
         println("Please enter a partial or full country name:")
         val countryName = scala.io.StdIn.readLine()
-        val airportsRunways = queryAirportsAndRunwaysByPartialCountryName(countryName)
-        // display airport and runways
-        // check if no results
-        if (airportsRunways.isEmpty) {
-            println("No results found")
-        } else {
-            airportsRunways.foreach(ar => {
-                println(s"Airport: ${ar.airportName}")
-                ar.runways.map(runway => println(s"\t- ${runway.niceDisplay}"))
-            })
+
+        // Query for airports and runways
+        val countryAirportsRunwaysOpt = queryAirportsAndRunwaysByPartialCountryName(countryName)
+
+        // Check if results were found
+        countryAirportsRunwaysOpt match {
+            case Some((country, airportsRunways)) =>
+                // Display the country name
+                println(s"Country: $country")
+                // Loop through each airport and its runways
+                airportsRunways.foreach { ar =>
+                    println(s"Airport: ${ar.airportName}")
+                    ar.runways.foreach { runway =>
+                        println(s"\t- ${runway.niceDisplay}")
+                    }
+                }
+            case None =>
+                // No country found
+                println("No results found")
         }
     }
 
