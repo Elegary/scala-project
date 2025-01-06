@@ -86,7 +86,7 @@ class RunwayRepository {
     }
   }
 
-  def getAiportsAndRunwaysByCountryCode(code: String): List[(String, Runway)] = {
+  def getAirportsAndRunwaysByCountryCode(code: String): List[(String, Runway)] = {
     DB readOnly { implicit session =>
       sql"""
       SELECT *
@@ -96,4 +96,22 @@ class RunwayRepository {
       """.map(rs => (rs.string("name"), Runway(rs))).list.apply()
     }
   }
+
+  def getAirportsAndRunwaysByPartialCountryName(name: String): List[(String, Runway)] = {
+
+    val pattern = s"%${name.toUpperCase}%"
+
+    DB readOnly { implicit session =>
+      sql"""
+      SELECT *
+      FROM runways r
+      JOIN airports a ON r.airport_ref = a.id
+      JOIN countries c ON a.iso_country = c.code
+      WHERE UPPER(c.name) LIKE $pattern
+      ORDER BY c.name
+      LIMIT 1
+      """.map(rs => (rs.string("name"), Runway(rs))).list.apply()
+    }
+  }
+
 }
