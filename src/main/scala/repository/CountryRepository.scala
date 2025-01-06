@@ -42,4 +42,10 @@ class CountryRepository {
     }
   }
 
+  def findCountryByCode(code: String): Option[Country] = {
+    DB readOnly { implicit session =>
+      sql"SELECT * FROM countries WHERE code = $code".map(Country.apply).single.apply()
+    }
+  }
+
 }
